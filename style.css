@@ -1,10 +1,10 @@
 .canvas-size {
     width: 90%;
-    height: 90%;
+!important;
+    /*height: 90%;*/
 }
-html{
-  /* background-color: #2ECCCC; */
-  /* font-style:normal; */
-  /* background: url(1.gif); */
-  
+
+body {
+    background-image: linear-gradient(to right, #FFb366, #c3d6ae, #FFb366);
+
 }

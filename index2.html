@@ -1,0 +1,131 @@
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+<div align="center">
+    <h2>Bitcoin</h2>
+
+    <canvas class="canvas-size" id="canvas">
+    </canvas>
+</div>
+
+<script type="text/javascript">
+
+    json = [
+        {"m": "2", "y": "2014", "value": "3572.735"},
+        {"m": "3", "y": "2014", "value": "3589.2608333333337"},
+        {"m": "4", "y": "2014", "value": "3567.763333333334"},
+        {"m": "5", "y": "2014", "value": "3458.066666666667"},
+        {"m": "6", "y": "2014", "value": "3417.1675"},
+        {"m": "7", "y": "2014", "value": "3452.223333333333"},
+        {"m": "8", "y": "2014", "value": "3454.008823529412"},
+        {"m": "9", "y": "2014", "value": "3454.194615384615"},
+        {"m": "10", "y": "2014", "value": "3470.0791666666664"},
+        {"m": "11", "y": "2014", "value": "3468.3050000000003"},
+        {"m": "12", "y": "2014", "value": "3452.3283333333334"},
+        {"m": "1", "y": "2015", "value": "3458.703333333333"},
+        {"m": "2", "y": "2015", "value": "3406.8208333333337"},
+        {"m": "3", "y": "2015", "value": "3403.9641666666666"},
+        {"m": "4", "y": "2015", "value": "3498.868333333334"},
+        {"m": "5", "y": "2015", "value": "3652.2116666666666"},
+        {"m": "6", "y": "2015", "value": "3645.2766666666666"},
+        {"m": "7", "y": "2015", "value": "3634.769999999999"},
+        {"m": "8", "y": "2015", "value": "3624.155833333334"},
+        {"m": "9", "y": "2015", "value": "3623.0716666666667"},
+        {"m": "10", "y": "2015", "value": "3609.869166666667"},
+        {"m": "11", "y": "2015", "value": "3610.7483333333334"},
+        {"m": "12", "y": "2015", "value": "3630.396666666666"},
+        {"m": "1", "y": "2016", "value": "3631.5533333333333"},
+        {"m": "2", "y": "2016", "value": "3810.7815384615387"},
+        {"m": "3", "y": "2016", "value": "3933.1433333333334"},
+        {"m": "4", "y": "2016", "value": "3951.565"},
+        {"m": "5", "y": "2016", "value": "3948.411666666667"},
+        {"m": "6", "y": "2016", "value": "3968.6566666666663"},
+        {"m": "7", "y": "2016", "value": "4018.0441666666666"},
+        {"m": "8", "y": "2016", "value": "4020.1258333333335"},
+        {"m": "9", "y": "2016", "value": "3829.568333333334"},
+        {"m": "10", "y": "2016", "value": "3833.3108333333334"},
+        {"m": "11", "y": "2016", "value": "3832.613076923077"},
+        {"m": "12", "y": "2016", "value": "3843.5833333333335"}];
+
+
+    let canvas;
+    let context;
+    let max;
+    let min;
+    let sections;
+    let xScale;
+    let yScale;
+    let values = [];
+    let bottomOffset = 20;
+
+    function drawGraph() {
+        canvas = document.getElementById("canvas");
+        sections = json.length;
+        max = json[0].value;
+        min = json[0].value;
+        let stepSize = 100;
+        let columnSize = canvas.width / json.length;
+        let rowSize = 50;
+        let xDescription = [];
+        xDescription.push("");
+        for (let i = 0; i < json.length; i++) {
+            if (json[i].value < min) {
+                min = json[i].value;
+            }
+            if (json[i].value > max) {
+                max = json[i].value;
+            }
+            values.push(json[i].value);
+            xDescription.push(json[i].m + "." + json[i].y)
+        }
+
+
+        context = canvas.getContext("2d");
+        context.fillStyle = "#0099ff"
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.9;
+        yScale = (canvas.height - columnSize - bottomOffset) / (max - min);
+        xScale = (canvas.width - rowSize) / sections;
+
+        context.strokeStyle = "#d6f9df";
+        context.beginPath();
+        let count = 0;
+        for (i = 1; i <= sections; i++) {
+            let x = i * xScale;
+            context.fillText(xDescription[i], x, canvas.height);
+            context.moveTo(x, columnSize);
+            context.lineTo(x, canvas.height - bottomOffset);
+            count++;
+        }
+        // print row header and draw horizontal grid lines
+        count = 0;
+        for (scale = max; scale >= min; scale = scale - stepSize) {
+            let y = columnSize + (yScale * count * stepSize);
+            let num = Number(scale);
+            context.fillText(num.toFixed(2), 0, y);
+            context.moveTo(rowSize, y);
+            context.lineTo(canvas.width, y);
+            count++;
+        }
+        context.stroke();
+
+        context.translate(rowSize, canvas.height - bottomOffset + min * yScale);
+        context.scale(1, -1 * yScale);
+
+        context.strokeStyle = "#FF0066";
+        context.beginPath();
+        context.moveTo(0, values[0]);
+        for (i = 1; i < sections; i++) {
+            context.lineTo(i * xScale, values[i]);
+        }
+        context.stroke();
+    }
+
+    window.onload = drawGraph();
+</script>
+</body>
+</html>
